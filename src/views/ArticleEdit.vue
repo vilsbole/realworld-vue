@@ -48,10 +48,22 @@
   </div>
 </template>
 <script>
-import { ARTICLE_PUBLISH } from '@/store/actions.type'
+import store from '@/store'
+import { ARTICLE_PUBLISH, FETCH_ARTICLE } from '@/store/actions.type'
 
 export default {
   name: 'RwvArticleEdit',
+  beforeRouteEnter (to, from, next) {
+    // SO: https://github.com/vuejs/vue-router/issues/1034
+    // If we arrive directly to this url, the prop is not set.
+    // So we fetch the article, then set the compoents data attribute.
+    if (to.params.previousArticle) {
+      return next()
+    }
+    return store
+      .dispatch(FETCH_ARTICLE, to.params.slug)
+      .then((res) => { return next(vm => vm.setData(res.article)) })
+  },
   props: {
     previousArticle: {
       type: Object,
@@ -74,6 +86,9 @@ export default {
   methods: {
     onPublish (slug, article) {
       this.$store.dispatch(ARTICLE_PUBLISH, article)
+    },
+    setData (article) {
+      this.article = article
     }
   }
 }

@@ -3,7 +3,7 @@
   <span v-if="canModify">
     <button
       class="btn btn-sm btn-outline-secondary"
-      v-on:click="editArticle(article.slug)">
+      v-on:click="editArticle(article.slug, article)">
       <i class="ion-edit"></i> &nbsp;Edit Article
     </button>
     &nbsp;&nbsp;
@@ -57,13 +57,16 @@ export default {
         : FAVORITE_ADD
       this.$store.dispatch(action, slug)
     },
-    editArticle (slug) {
-      this.$router.push({ name: 'article-edit', params: { slug } })
+    editArticle (slug, article) {
+      this.$router.push({
+        name: 'article-edit',
+        params: { slug, previousArticle: article }
+      })
     },
     deleteArticle (slug) {
-      this.$store.dispatch(ARTICLE_DELETE, slug)
+      this.$store
+        .dispatch(ARTICLE_DELETE, slug)
         .then((res) => {
-          // After delete go to home page
           this.$router.push('/')
         })
     }

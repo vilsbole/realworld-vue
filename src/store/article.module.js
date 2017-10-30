@@ -24,6 +24,7 @@ export const actions = {
     return ArticlesService.get(articleSlug)
       .then(({ data }) => {
         context.commit(SET_ARTICLE, data.article)
+        return data
       })
   },
   [FETCH_COMMENTS] (context, articleSlug) {

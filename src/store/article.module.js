@@ -77,8 +77,8 @@ export const actions = {
   [ARTICLE_DELETE] (context, slug) {
     return ArticlesService.destroy(slug)
   },
-  [ARTICLE_EDIT] (context, slug) {
-
+  [ARTICLE_EDIT] (context, { slug, article }) {
+    return ArticlesService.update(slug, article)
   }
 }
 

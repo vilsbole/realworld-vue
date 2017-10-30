@@ -3,7 +3,7 @@
     <div class="container page">
       <div class="row">
         <div class="col-md-10 offset-md-1 col-xs-12">
-          <form v-on:submit="onPublish({}, article)">
+          <form v-on:submit="onPublish(article.slug, article)">
             <fieldset>
               <fieldset class="form-group">
                 <input
@@ -49,7 +49,7 @@
 </template>
 <script>
 import store from '@/store'
-import { ARTICLE_PUBLISH, FETCH_ARTICLE } from '@/store/actions.type'
+import { ARTICLE_PUBLISH, ARTICLE_EDIT, FETCH_ARTICLE } from '@/store/actions.type'
 
 export default {
   name: 'RwvArticleEdit',
@@ -57,12 +57,13 @@ export default {
     // SO: https://github.com/vuejs/vue-router/issues/1034
     // If we arrive directly to this url, the prop is not set.
     // So we fetch the article, then set the compoents data attribute.
-    if (to.params.previousArticle) {
-      return next()
-    }
-    return store
+    if (!to.params.previousArticle && to.params.slug) {
+      return store
       .dispatch(FETCH_ARTICLE, to.params.slug)
       .then((res) => { return next(vm => vm.setData(res.article)) })
+    } else {
+      return next()
+    }
   },
   props: {
     previousArticle: {
@@ -85,8 +86,23 @@ export default {
   },
   methods: {
     onPublish (slug, article) {
-      this.$store.dispatch(ARTICLE_PUBLISH, article)
+      let action, payload
+      if (!slug) {
+        action = ARTICLE_PUBLISH
+        payload = article
+      } else {
+        action = ARTICLE_EDIT
+        payload = { slug, article }
+      }
+      this.$store.dispatch(action, payload)
+        .then(({ data }) => {
+          this.$router.push({
+            name: 'article',
+            params: { slug: data.article.slug }
+          })
+        })
     },
+
     setData (article) {
       this.article = article
     }

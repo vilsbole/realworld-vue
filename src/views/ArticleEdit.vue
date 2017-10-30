@@ -3,8 +3,11 @@
     <div class="container page">
       <div class="row">
         <div class="col-md-10 offset-md-1 col-xs-12">
+          <rwv-list-errors
+            :errors="errors">
+          </rwv-list-errors>
           <form v-on:submit="onPublish(article.slug, article)">
-            <fieldset>
+            <fieldset :disabled="inProgress">
               <fieldset class="form-group">
                 <input
                   type="text"
@@ -37,6 +40,7 @@
               </fieldset>
             </fieldset>
             <button
+              :disabled="inProgress"
               class="btn btn-lg pull-xs-right btn-primary"
               type="submit">
               Publish Article
@@ -49,22 +53,12 @@
 </template>
 <script>
 import store from '@/store'
+import RwvListErrors from '@/components/ListErrors'
 import { ARTICLE_PUBLISH, ARTICLE_EDIT, FETCH_ARTICLE } from '@/store/actions.type'
 
 export default {
   name: 'RwvArticleEdit',
-  beforeRouteEnter (to, from, next) {
-    // SO: https://github.com/vuejs/vue-router/issues/1034
-    // If we arrive directly to this url, the prop is not set.
-    // So we fetch the article, then set the compoents data attribute.
-    if (!to.params.previousArticle && to.params.slug) {
-      return store
-      .dispatch(FETCH_ARTICLE, to.params.slug)
-      .then((res) => { return next(vm => vm.setData(res.article)) })
-    } else {
-      return next()
-    }
-  },
+  components: { RwvListErrors },
   props: {
     previousArticle: {
       type: Object,
@@ -79,14 +73,29 @@ export default {
       }
     }
   },
+  beforeRouteEnter (to, from, next) {
+    // SO: https://github.com/vuejs/vue-router/issues/1034
+    // If we arrive directly to this url, the prop is not set.
+    // So we fetch the article, then set the compoents data attribute.
+    if (!to.params.previousArticle && to.params.slug) {
+      return store
+      .dispatch(FETCH_ARTICLE, to.params.slug)
+      .then((res) => { return next(vm => vm.setData(res.article)) })
+    } else {
+      return next()
+    }
+  },
   data () {
     return {
-      article: this.previousArticle
+      article: this.previousArticle,
+      inProgress: false,
+      errors: {}
     }
   },
   methods: {
     onPublish (slug, article) {
       let action, payload
+      this.inProgress = true
       if (!slug) {
         action = ARTICLE_PUBLISH
         payload = article
@@ -96,13 +105,17 @@ export default {
       }
       this.$store.dispatch(action, payload)
         .then(({ data }) => {
+          this.inProgress = false
           this.$router.push({
             name: 'article',
             params: { slug: data.article.slug }
           })
         })
+        .catch(({ response }) => {
+          this.errors = response.data.errors
+          this.inProgress = false
+        })
     },
-
     setData (article) {
       this.article = article
     }

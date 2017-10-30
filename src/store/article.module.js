@@ -6,7 +6,9 @@ import {
   COMMENT_DESTROY,
   FAVORITE_ADD,
   FAVORITE_REMOVE,
-  ARTICLE_PUBLISH } from './actions.type'
+  ARTICLE_PUBLISH,
+  ARTICLE_EDIT,
+  ARTICLE_DELETE } from './actions.type'
 import {
   SET_ARTICLE,
   SET_COMMENTS,
@@ -69,8 +71,13 @@ export const actions = {
       })
   },
   [ARTICLE_PUBLISH] (context, payload) {
-    return ArticlesService
-      .create(payload)
+    return ArticlesService.create(payload)
+  },
+  [ARTICLE_DELETE] (context, slug) {
+    return ArticlesService.destroy(slug)
+  },
+  [ARTICLE_EDIT] (context, slug) {
+
   }
 }
 

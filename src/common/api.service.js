@@ -70,7 +70,11 @@ export const ArticlesService = {
   },
   create (params) {
     return ApiService.post('articles', params)
+  },
+  destroy (slug) {
+    return ApiService.delete(`articles/${slug}`)
   }
+
 }
 
 export const CommentsService = {

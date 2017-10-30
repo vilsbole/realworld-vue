@@ -5,7 +5,6 @@
         <h1>{{article.title}}</h1>
         <rwv-article-meta
           :article="article"
-          :actions="true"
         ></rwv-article-meta>
       </div>
     </div>
@@ -29,8 +28,7 @@
       <div class="article-actions">
         <rwv-article-meta
           :article="article"
-          :actions="true">
-        </rwv-article-meta>
+        ></rwv-article-meta>
       </div>
       <div class="row">
         <div class="col-xs-12 col-md-8 offset-md-2">

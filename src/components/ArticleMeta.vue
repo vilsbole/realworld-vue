@@ -9,7 +9,6 @@
       </router-link>
       <span class="date">{{ article.createdAt | date }}</span>
     </div>
-
     <template v-if="isCurrentUser() && actions">
       <router-link class="btn btn-sm btn-outline-secondary" :to="{ name: 'article-edit', params: { slug: this.article.slug } }">
         <i class="ion-edit"></i>

@@ -1,4 +1,6 @@
 export const ARTICLE_PUBLISH = 'publishArticle'
+export const ARTICLE_DELETE = 'deleteArticle'
+export const ARTICLE_EDIT = 'editArticle'
 export const CHECK_AUTH = 'checkAuth'
 export const COMMENT_CREATE = 'createComment'
 export const COMMENT_DESTROY = 'destroyComment'

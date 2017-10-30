@@ -5,7 +5,8 @@ import {
   COMMENT_CREATE,
   COMMENT_DESTROY,
   FAVORITE_ADD,
-  FAVORITE_REMOVE } from './actions.type'
+  FAVORITE_REMOVE,
+  ARTICLE_PUBLISH } from './actions.type'
 import {
   SET_ARTICLE,
   SET_COMMENTS,
@@ -66,6 +67,10 @@ export const actions = {
         )
         context.commit(SET_ARTICLE, data.article)
       })
+  },
+  [ARTICLE_PUBLISH] (context, payload) {
+    return ArticlesService
+      .create(payload)
   }
 }
 

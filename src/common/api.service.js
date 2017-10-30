@@ -67,6 +67,9 @@ export const ArticlesService = {
   },
   get (slug) {
     return ApiService.get('articles', slug)
+  },
+  create (params) {
+    return ApiService.post('articles', params)
   }
 }
 

@@ -8,10 +8,14 @@ import {
   FAVORITE_REMOVE,
   ARTICLE_PUBLISH,
   ARTICLE_EDIT,
+  ARTICLE_EDIT_ADD_TAG,
+  ARTICLE_EDIT_REMOVE_TAG,
   ARTICLE_DELETE } from './actions.type'
 import {
   SET_ARTICLE,
   SET_COMMENTS,
+  TAG_ADD,
+  TAG_REMOVE,
   UPDATE_ARTICLE_IN_LIST } from './mutations.type'
 
 export const state = {
@@ -79,6 +83,12 @@ export const actions = {
   },
   [ARTICLE_EDIT] (context, { slug, article }) {
     return ArticlesService.update(slug, article)
+  },
+  [ARTICLE_EDIT_ADD_TAG] (context, tag) {
+    context.commit(TAG_ADD, tag)
+  },
+  [ARTICLE_EDIT_REMOVE_TAG] (context, tag) {
+    context.commit(TAG_REMOVE, tag)
   }
 }
 
@@ -89,6 +99,12 @@ export const mutations = {
   },
   [SET_COMMENTS] (state, comments) {
     state.comments = comments
+  },
+  [TAG_ADD] (state, tag) {
+    state.article.tagList = state.article.tagList.concat([tag])
+  },
+  [TAG_REMOVE] (state, tag) {
+    state.article.tagList = state.article.tagList.filter(t => t !== tag)
   }
 }
 

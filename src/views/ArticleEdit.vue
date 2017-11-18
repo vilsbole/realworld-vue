@@ -36,7 +36,7 @@
                   class="form-control"
                   placeholder="Enter tags"
                   v-model="tagInput"
-                  v-on:keypress.enter.prevent="addTag">
+                  v-on:keypress.enter.prevent="addTag(tagInput)">
                 <div class="tag-list">
                   <span
                   class="tag-default tag-pill"
@@ -66,7 +66,13 @@
 <script>
 import store from '@/store'
 import RwvListErrors from '@/components/ListErrors'
-import { ARTICLE_PUBLISH, ARTICLE_EDIT, FETCH_ARTICLE } from '@/store/actions.type'
+import {
+  ARTICLE_PUBLISH,
+  ARTICLE_EDIT,
+  FETCH_ARTICLE,
+  ARTICLE_EDIT_ADD_TAG,
+  ARTICLE_EDIT_REMOVE_TAG
+} from '@/store/actions.type'
 
 export default {
   name: 'RwvArticleEdit',
@@ -88,11 +94,11 @@ export default {
   beforeRouteEnter (to, from, next) {
     // SO: https://github.com/vuejs/vue-router/issues/1034
     // If we arrive directly to this url, the prop is not set.
-    // So we fetch the article, then set the compoents data attribute.
+    // So we fetch the article, then set the components data attribute.
     if (!to.params.previousArticle && to.params.slug) {
       return store
-      .dispatch(FETCH_ARTICLE, to.params.slug)
-      .then((res) => { return next(vm => vm.setData(res.article)) })
+        .dispatch(FETCH_ARTICLE, to.params.slug)
+        .then(res => next(vm => vm.setData(res.article)))
     } else {
       return next()
     }
@@ -116,7 +122,8 @@ export default {
         action = ARTICLE_EDIT
         payload = { slug, article }
       }
-      this.$store.dispatch(action, payload)
+      this.$store
+        .dispatch(action, payload)
         .then(({ data }) => {
           this.inProgress = false
           this.$router.push({
@@ -133,9 +140,12 @@ export default {
       this.article = article
     },
     removeTag (tag) {
+      this.$store.dispatch(ARTICLE_EDIT_REMOVE_TAG, tag)
       console.log('removeing')
     },
     addTag (tag) {
+      console.log('tag', tag)
+      this.$store.dispatch(ARTICLE_EDIT_ADD_TAG, tag)
       this.tagInput = null
     }
   }

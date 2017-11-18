@@ -73,6 +73,9 @@ import {
   ARTICLE_EDIT_ADD_TAG,
   ARTICLE_EDIT_REMOVE_TAG
 } from '@/store/actions.type'
+import {
+  GET_ARTICLE
+} from '@/store/getters.type'
 
 export default {
   name: 'RwvArticleEdit',
@@ -80,32 +83,24 @@ export default {
   props: {
     previousArticle: {
       type: Object,
-      required: false,
-      default: () => {
-        return {
-          title: '',
-          description: '',
-          body: '',
-          tagList: []
-        }
-      }
+      required: false
     }
   },
-  beforeRouteEnter (to, from, next) {
+  async beforeRouteEnter (to, from, next) {
     // SO: https://github.com/vuejs/vue-router/issues/1034
-    // If we arrive directly to this url, the prop is not set.
-    // So we fetch the article, then set the components data attribute.
-    if (!to.params.previousArticle && to.params.slug) {
-      return store
-        .dispatch(FETCH_ARTICLE, to.params.slug)
-        .then(res => next(vm => vm.setData(res.article)))
-    } else {
-      return next()
+    // If we arrive directly to this url, we need to fetch the article
+    if (to.params.slug) {
+      await store.dispatch(
+        FETCH_ARTICLE,
+        to.params.slug,
+        to.params.previousArticle
+      )
     }
+    return next()
   },
   data () {
     return {
-      article: this.previousArticle,
+      article: this.$store.getters[GET_ARTICLE],
       tagInput: null,
       inProgress: false,
       errors: {}
@@ -113,17 +108,10 @@ export default {
   },
   methods: {
     onPublish (slug, article) {
-      let action, payload
+      let action = slug ? ARTICLE_EDIT : ARTICLE_PUBLISH
       this.inProgress = true
-      if (!slug) {
-        action = ARTICLE_PUBLISH
-        payload = article
-      } else {
-        action = ARTICLE_EDIT
-        payload = { slug, article }
-      }
       this.$store
-        .dispatch(action, payload)
+        .dispatch(action)
         .then(({ data }) => {
           this.inProgress = false
           this.$router.push({
@@ -136,15 +124,10 @@ export default {
           this.inProgress = false
         })
     },
-    setData (article) {
-      this.article = article
-    },
     removeTag (tag) {
       this.$store.dispatch(ARTICLE_EDIT_REMOVE_TAG, tag)
-      console.log('removeing')
     },
     addTag (tag) {
-      console.log('tag', tag)
       this.$store.dispatch(ARTICLE_EDIT_ADD_TAG, tag)
       this.tagInput = null
     }

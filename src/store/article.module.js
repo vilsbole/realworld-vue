@@ -17,14 +17,26 @@ import {
   TAG_ADD,
   TAG_REMOVE,
   UPDATE_ARTICLE_IN_LIST } from './mutations.type'
+import {
+  GET_ARTICLE
+} from './getters.type'
 
 export const state = {
-  article: {},
+  article: {
+    title: '',
+    description: '',
+    body: '',
+    tagList: []
+  },
   comments: []
 }
 
 export const actions = {
-  [FETCH_ARTICLE] (context, articleSlug) {
+  [FETCH_ARTICLE] (context, articleSlug, prevArticle) {
+    // avoid extronuous network call if article exists
+    if (prevArticle !== undefined) {
+      return context.commit(SET_ARTICLE, prevArticle)
+    }
     return ArticlesService.get(articleSlug)
       .then(({ data }) => {
         context.commit(SET_ARTICLE, data.article)
@@ -75,14 +87,14 @@ export const actions = {
         context.commit(SET_ARTICLE, data.article)
       })
   },
-  [ARTICLE_PUBLISH] (context, payload) {
-    return ArticlesService.create(payload)
+  [ARTICLE_PUBLISH] ({ state }) {
+    return ArticlesService.create(state.article)
   },
   [ARTICLE_DELETE] (context, slug) {
     return ArticlesService.destroy(slug)
   },
-  [ARTICLE_EDIT] (context, { slug, article }) {
-    return ArticlesService.update(slug, article)
+  [ARTICLE_EDIT] ({ state }) {
+    return ArticlesService.update(state.article.slug, state.article)
   },
   [ARTICLE_EDIT_ADD_TAG] (context, tag) {
     context.commit(TAG_ADD, tag)
@@ -108,8 +120,16 @@ export const mutations = {
   }
 }
 
+const getters = {
+  [GET_ARTICLE] (state) {
+    console.log('hello, get')
+    return state.article
+  }
+}
+
 export default {
   state,
   actions,
-  mutations
+  mutations,
+  getters
 }

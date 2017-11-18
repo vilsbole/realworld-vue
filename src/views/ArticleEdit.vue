@@ -34,8 +34,9 @@
                 <input
                   type="text"
                   class="form-control"
+                  placeholder="Enter tags"
                   v-model="tagInput"
-                  placeholder="Enter tags">
+                  v-on:keypress.enter.prevent="addTag">
                 <div class="tag-list">
                   <span
                   class="tag-default tag-pill"
@@ -99,7 +100,7 @@ export default {
   data () {
     return {
       article: this.previousArticle,
-      tagInput: '',
+      tagInput: null,
       inProgress: false,
       errors: {}
     }
@@ -133,6 +134,9 @@ export default {
     },
     removeTag (tag) {
       console.log('removeing')
+    },
+    addTag (tag) {
+      this.tagInput = null
     }
   }
 }

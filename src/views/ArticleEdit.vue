@@ -34,9 +34,20 @@
                 <input
                   type="text"
                   class="form-control"
-                  v-model="article.tagList"
+                  v-model="tagInput"
                   placeholder="Enter tags">
-                <div class="tag-list"></div>
+                <div class="tag-list">
+                  <span
+                  class="tag-default tag-pill"
+                  v-for="(tag, index) of article.tagList"
+                  :key="tag + index">
+                  <i
+                  class="ion-close-round"
+                  v-on:click="removeTag(tag)">
+                </i>
+                {{ tag }}
+              </span>
+            </div>
               </fieldset>
             </fieldset>
             <button
@@ -88,6 +99,7 @@ export default {
   data () {
     return {
       article: this.previousArticle,
+      tagInput: '',
       inProgress: false,
       errors: {}
     }
@@ -118,6 +130,9 @@ export default {
     },
     setData (article) {
       this.article = article
+    },
+    removeTag (tag) {
+      console.log('removeing')
     }
   }
 }

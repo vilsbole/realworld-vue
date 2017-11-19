@@ -31,6 +31,7 @@ const ApiService = {
   },
 
   post (resource, params) {
+    console.log(params)
     return Vue.axios.post(`${resource}`, params)
   },
 
@@ -72,15 +73,14 @@ export const ArticlesService = {
     return ApiService.get('articles', slug)
   },
   create (params) {
-    return ApiService.post('articles', params)
+    return ApiService.post('articles', {article: params})
+  },
+  update (slug, params) {
+    return ApiService.update('articles', slug, {article: params})
   },
   destroy (slug) {
     return ApiService.delete(`articles/${slug}`)
-  },
-  update (slug, params) {
-    return ApiService.update('articles', slug, params)
   }
-
 }
 
 export const CommentsService = {

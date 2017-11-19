@@ -12,7 +12,7 @@
                 <input
                   type="text"
                   class="form-control form-control-lg"
-                  v-model="article.title"
+                  :value="article.title"
                   placeholder="Article Title">
               </fieldset>
               <fieldset class="form-group">
@@ -71,7 +71,8 @@ import {
   ARTICLE_EDIT,
   FETCH_ARTICLE,
   ARTICLE_EDIT_ADD_TAG,
-  ARTICLE_EDIT_REMOVE_TAG
+  ARTICLE_EDIT_REMOVE_TAG,
+  ARTICLE_RESET_STATE
 } from '@/store/actions.type'
 import {
   GET_ARTICLE
@@ -86,12 +87,17 @@ export default {
       required: false
     }
   },
+  async beforeRouteUpdate (to, from, next) {
+    // Reset state if user goes from /editor/:id to /editor
+    // The component is not recreated so we use to hook to reset the state.
+    await store.dispatch(ARTICLE_RESET_STATE)
+    return next()
+  },
   async beforeRouteEnter (to, from, next) {
     // SO: https://github.com/vuejs/vue-router/issues/1034
     // If we arrive directly to this url, we need to fetch the article
-    if (to.params.slug) {
-      await store.dispatch(
-        FETCH_ARTICLE,
+    if (to.params.slug !== undefined) {
+      await store.dispatch(FETCH_ARTICLE,
         to.params.slug,
         to.params.previousArticle
       )
@@ -100,11 +106,13 @@ export default {
   },
   data () {
     return {
-      article: this.$store.getters[GET_ARTICLE],
       tagInput: null,
-      inProgress: false,
-      errors: {}
+      inProgress: false
     }
+  },
+  computed: {
+    article () { return this.$store.getters[GET_ARTICLE] },
+    errors () { return {} }
   },
   methods: {
     onPublish (slug, article) {
@@ -120,8 +128,8 @@ export default {
           })
         })
         .catch(({ response }) => {
-          this.errors = response.data.errors
           this.inProgress = false
+          this.errors = response.data.errors
         })
     },
     removeTag (tag) {

@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { ArticlesService, CommentsService, FavoriteService } from '@/common/api.service'
 import {
   FETCH_ARTICLE,
@@ -10,18 +11,22 @@ import {
   ARTICLE_EDIT,
   ARTICLE_EDIT_ADD_TAG,
   ARTICLE_EDIT_REMOVE_TAG,
-  ARTICLE_DELETE } from './actions.type'
+  ARTICLE_DELETE,
+  ARTICLE_RESET_STATE
+} from './actions.type'
 import {
+  RESET_STATE,
   SET_ARTICLE,
   SET_COMMENTS,
   TAG_ADD,
   TAG_REMOVE,
-  UPDATE_ARTICLE_IN_LIST } from './mutations.type'
+  UPDATE_ARTICLE_IN_LIST
+} from './mutations.type'
 import {
   GET_ARTICLE
 } from './getters.type'
 
-export const state = {
+const initialState = {
   article: {
     title: '',
     description: '',
@@ -30,6 +35,8 @@ export const state = {
   },
   comments: []
 }
+
+export const state = Object.assign({}, initialState)
 
 export const actions = {
   [FETCH_ARTICLE] (context, articleSlug, prevArticle) {
@@ -101,6 +108,9 @@ export const actions = {
   },
   [ARTICLE_EDIT_REMOVE_TAG] (context, tag) {
     context.commit(TAG_REMOVE, tag)
+  },
+  [ARTICLE_RESET_STATE] ({ commit }) {
+    commit(RESET_STATE)
   }
 }
 
@@ -117,12 +127,16 @@ export const mutations = {
   },
   [TAG_REMOVE] (state, tag) {
     state.article.tagList = state.article.tagList.filter(t => t !== tag)
+  },
+  [RESET_STATE] () {
+    for (let f in state) {
+      Vue.set(state, f, initialState[f])
+    }
   }
 }
 
 const getters = {
   [GET_ARTICLE] (state) {
-    console.log('hello, get')
     return state.article
   }
 }

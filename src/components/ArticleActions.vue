@@ -68,8 +68,7 @@ export default {
       this.$store
         .dispatch(ARTICLE_DELETE, slug)
         .then((res) => {
-          console.log('res', res)
-          // this.$router.push('/')
+          this.$router.push('/')
         })
     }
   }

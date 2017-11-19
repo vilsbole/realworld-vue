@@ -5,6 +5,7 @@
         <h1>{{article.title}}</h1>
         <rwv-article-meta
           :article="article"
+          :actions="true"
         ></rwv-article-meta>
       </div>
     </div>
@@ -28,6 +29,7 @@
       <div class="article-actions">
         <rwv-article-meta
           :article="article"
+          :actions="true"
         ></rwv-article-meta>
       </div>
       <div class="row">
@@ -62,7 +64,12 @@
   import RwvComment from '@/components/Comment'
   import RwvCommentEditor from '@/components/CommentEditor'
   import { FETCH_ARTICLE, FETCH_COMMENTS } from '@/store/actions.type'
-  import { GET_CURRENT_USER, IS_AUTHENTICATED } from '@/store/getters.type'
+  import {
+    GET_ARTICLE,
+    GET_COMMENTS,
+    GET_CURRENT_USER,
+    IS_AUTHENTICATED
+  } from '@/store/getters.type'
 
   export default {
     name: 'RwvArticle',

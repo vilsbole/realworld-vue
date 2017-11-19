@@ -10,19 +10,19 @@
     </div>
     <div class="container page">
       <div class="row article-content">
-        <div class="col-md-12">
+        <div class="col-xs-12">
           <vue-markdown
             :source="article.body">
           </vue-markdown>
-        </div>
-        <ul class="tag-list">
-          <li
+          <ul class="tag-list">
+            <li
             class="tag-default tag-pill tag-outline"
             v-for="(tag, index) of article.tagList"
             :key="tag + index">
             {{ tag }}
           </li>
         </ul>
+        </div>
       </div>
       <hr/>
       <div class="article-actions">

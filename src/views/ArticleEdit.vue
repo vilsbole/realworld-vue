@@ -12,7 +12,7 @@
                 <input
                   type="text"
                   class="form-control form-control-lg"
-                  :value="article.title"
+                  v-model="article.title"
                   placeholder="Article Title">
               </fieldset>
               <fieldset class="form-group">
@@ -96,6 +96,7 @@ export default {
   async beforeRouteEnter (to, from, next) {
     // SO: https://github.com/vuejs/vue-router/issues/1034
     // If we arrive directly to this url, we need to fetch the article
+    await store.dispatch(ARTICLE_RESET_STATE)
     if (to.params.slug !== undefined) {
       await store.dispatch(FETCH_ARTICLE,
         to.params.slug,
@@ -104,15 +105,19 @@ export default {
     }
     return next()
   },
+  async beforeRouteLeave (to, from, next) {
+    await store.dispatch(ARTICLE_RESET_STATE)
+    next()
+  },
   data () {
     return {
       tagInput: null,
-      inProgress: false
+      inProgress: false,
+      errors: {}
     }
   },
   computed: {
-    article () { return this.$store.getters[GET_ARTICLE] },
-    errors () { return {} }
+    article () { return this.$store.getters[GET_ARTICLE] }
   },
   methods: {
     onPublish (slug, article) {

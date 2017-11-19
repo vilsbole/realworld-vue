@@ -23,11 +23,13 @@ import {
   UPDATE_ARTICLE_IN_LIST
 } from './mutations.type'
 import {
-  GET_ARTICLE
+  GET_ARTICLE,
+  GET_COMMENTS
 } from './getters.type'
 
 const initialState = {
   article: {
+    author: {},
     title: '',
     description: '',
     body: '',
@@ -138,6 +140,9 @@ export const mutations = {
 const getters = {
   [GET_ARTICLE] (state) {
     return state.article
+  },
+  [GET_COMMENTS] (state) {
+    return state.comments
   }
 }
 

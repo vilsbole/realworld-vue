@@ -88,10 +88,10 @@
     },
     computed: {
       article () {
-        return this.$store.state.article.article
+        return this.$store.getters[GET_ARTICLE]
       },
       comments () {
-        return this.$store.state.article.comments
+        return this.$store.getters[GET_COMMENTS]
       },
       user () {
         return this.$store.getters[GET_CURRENT_USER]

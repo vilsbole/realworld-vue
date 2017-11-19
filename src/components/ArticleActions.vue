@@ -1,11 +1,11 @@
 <template>
   <!-- Used when user is also author -->
   <span v-if="canModify">
-    <button
+    <router-link
       class="btn btn-sm btn-outline-secondary"
-      v-on:click="editArticle(article.slug, article)">
-      <i class="ion-edit"></i> &nbsp;Edit Article
-    </button>
+      :to="{ name: 'article-edit', params: { slug: this.article.slug } }">
+      <i class="ion-edit"></i>&nbsp;Edit Article
+    </router-link>
     &nbsp;&nbsp;
     <button
       class="btn btn-outline-danger btn-sm"
@@ -48,7 +48,8 @@ import { FAVORITE_ADD, FAVORITE_REMOVE, ARTICLE_DELETE } from '@/store/actions.t
 export default {
   name: 'RwvArticleActions',
   props: {
-    article: { type: Object, required: true }
+    article: { type: Object, required: true },
+    canModify: { type: Boolean, required: true }
   },
   methods: {
     toggleFavorite (slug) {
@@ -67,13 +68,9 @@ export default {
       this.$store
         .dispatch(ARTICLE_DELETE, slug)
         .then((res) => {
-          this.$router.push('/')
+          console.log('res', res)
+          // this.$router.push('/')
         })
-    }
-  },
-  computed: {
-    canModify () {
-      return this.$store.state.auth.user.username === this.article.author.username
     }
   }
 }

@@ -17,6 +17,7 @@ import RwvHomeMyFeed from '@/views/HomeMyFeed'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
